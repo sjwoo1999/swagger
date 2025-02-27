@@ -3,8 +3,15 @@ const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const helloWorldController = require('./api/controllers/hello_world');
-const healthController = require('./api/controllers/healthController'); // 추가
-const userController = require('./api/controllers/userController'); // 추가
+const authController = require('./api/controllers/authController');
+const adminController = require('./api/controllers/adminController');
+const recruitmentController = require('./api/controllers/recruitmentController');
+const projectController = require('./api/controllers/projectController');
+const profileController = require('./api/controllers/profileController');
+const commentController = require('./api/controllers/commentController');
+const scrapController = require('./api/controllers/scrapController');
+const searchController = require('./api/controllers/searchController');
+const univCertController = require('./api/controllers/univCertController');
 
 const app = express();
 
@@ -44,34 +51,53 @@ app.get('/', (req, res) => {
 // hello_world 컨트롤러 라우트 추가
 app.get('/hello', helloWorldController.hello);
 
-// 수정된 /api/register 엔드포인트
-app.post('/api/register', (req, res) => {
-  console.log('Request Body:', req.body);
+// auth 라우트 추가
+app.post('/api/auth/register', authController.register);
+app.post('/api/auth/login', authController.login);
+app.post('/api/auth/validate-password', authController.validatePassword);
 
-  if (!req.body || !req.body.username || !req.body.email || !req.body.password) {
-    return res.status(400).json({ 
-      error: '❌ 모든 필드(username, email, password)가 필요합니다.' 
-    });
-  }
+// admin 라우트 추가
+app.post('/api/admin/login', adminController.loginAdmin);
+app.get('/api/admin/certified-users', adminController.getCertifiedUsers);
+app.delete('/api/admin/clear-verified-emails', adminController.clearVerifiedEmails);
 
-  const { username, email, password } = req.body;
+// recruitment 라우트 추가
+app.get('/api/recruitment', recruitmentController.getRecruitments);
+app.get('/api/recruitment/:recruitment_id', recruitmentController.getRecruitmentById);
+app.post('/api/recruitment', recruitmentController.createRecruitment);
+app.put('/api/recruitment/:recruitment_id', recruitmentController.updateRecruitment);
+app.delete('/api/recruitment/:recruitment_id', recruitmentController.deleteRecruitment);
 
-  res.status(201).json({
-    message: '✅ 회원가입 성공!',
-    user: {
-      user_id: 1,
-      uuid: '123e4567-e89b-12d3-a456-426614174000',
-      username,
-      email,
-      role: 'MEMBER',
-      createdAt: new Date().toISOString()
-    }
-  });
-});
+// project 라우트 추가
+app.get('/api/projects', projectController.getProjects);
+app.get('/api/projects/:project_id', projectController.getProjectById);
+app.get('/api/projects/completed', projectController.getCompletedProjects);
+app.put('/api/projects/:project_id', projectController.updateProject);
+app.delete('/api/projects/:project_id', projectController.deleteProject);
+app.get('/api/projects/:project_id/members', projectController.getProjectMembers);
+app.post('/api/projects/:project_id/members', projectController.addProjectMember);
 
-// 새로운 엔드포인트 추가
-app.get('/api/health', healthController.getHealth);
-app.get('/api/users', userController.getUsers);
+// profile 라우트 추가
+app.get('/api/profiles/:user_id', profileController.getProfile);
+app.post('/api/profiles', profileController.createProfile);
+app.put('/api/profiles/:profile_id', profileController.updateProfile);
+app.delete('/api/profiles/:profile_id', profileController.deleteProfile);
+app.get('/api/profiles/resume/:user_id', profileController.getResume);
+
+// comment 라우트 추가
+app.get('/api/recruitments/:recruitment_id/comment', commentController.getComments);
+app.post('/api/recruitment/:recruitment_id/comment', commentController.createComment);
+
+// scrap 라우트 추가
+app.get('/api/scraps/recruitments', scrapController.getScrapedRecruitments);
+app.put('/api/recruitment/:recruitment_id/scrap', scrapController.toggleScrap);
+
+// search 라우트 추가
+app.get('/api/search', searchController.search);
+
+// univCert 라우트 추가
+app.post('/api/univcert/send-otp', univCertController.sendOtp);
+app.post('/api/univcert/verify-otp', univCertController.verifyOtp);
 
 // 동적 포트 설정
 const findAvailablePort = async (ports) => {
