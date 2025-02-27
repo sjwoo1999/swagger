@@ -7,7 +7,8 @@ Swagger와 Node.js를 연습하기 위한 간단한 API 프로젝트입니다. �
 - 2025-02-27: 프로젝트 초기화, `main` 브랜치 생성 및 Git 초기 설정 완료. `express`, `swagger-ui-express`, `yamljs` 패키지 설치.
 - 2025-02-27: 기본 서버 설정(`app.js`)과 Swagger 명세(`swagger.yaml`) 작성, `/hello` 엔드포인트 추가. 로컬에서 `node app.js` 실행 후 `http://localhost:3000/api-docs`에서 Swagger UI 정상 작동 확인.
 - 2025-02-27: 포트 충돌 방지를 위한 동적 포트 설정(포트 `3000`, `3001`, `3002`) 구현, `app.js` 업데이트 완료. 테스트 후 포트 `3001`에서 서버 실행 확인.
-- 2025-02-27: `/api/register` 엔드포인트 및 Swagger 명세 추가
+- 2025-02-27: `/api/register` 엔드포인트 및 Swagger 명세 추가.
+- 2025-02-27: `Failed to fetch` 오류 해결 (CORS 설정 강화 및 포트 불일치 수정), Swagger UI 테스트 완료. `/` → `200 OK`, `{"message": "Welcome to Swagger Practice API!..."}`; `/hello?name=history` → `200 OK`, `{"message": "Hello, history!"}`; `/api/register` → `201 Created`, 사용자 객체 반환.
 
 ## 사용 방법
 1. `npm install` 실행
