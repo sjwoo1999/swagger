@@ -63,6 +63,14 @@
   부적절한 단어(`bad`, `ugly`, `mean`) 필터링, Swagger UI 테스트 완료.  
   정상 댓글 → `201 Created`, 부적절한 댓글 → `400 Bad Request`, `{"error":"댓글에 부적절한 언어가 포함되었습니다."}`.
 
+- **2025-02-27** 🛠️  
+  CRUD 기능 완성: 사용자, 프로젝트, 댓글, 관리자 계정 모두 CRUD 작업 구현.  
+  - 사용자 관리: `/api/users/{id}` (PUT, DELETE) 추가, 수정/삭제 가능.  
+  - 프로젝트 관리: `/api/projects` (POST) 추가, 생성 가능.  
+  - 댓글 관리: `/api/recruitments/{recruitment_id}/comment/{comment_id}` (PUT, DELETE) 추가, 수정/삭제 가능.  
+  - 관리자 계정 관리: `/api/admin/users` (POST, GET), `/api/admin/users/{id}` (PUT, DELETE) 추가, CRUD 완료.  
+  Swagger UI 및 `curl`로 테스트 완료.
+
 ---
 
 ## 🛠️ 사용 방법
@@ -73,17 +81,20 @@
 npm install
 ```
 
-### 2. **서버 실행**
-서버를 구동하기 위해 다음 명령어를 실행합니다:
+---
+
+### 2. **서버 실행**  
+서버를 구동하기 위해 다음 명령어를 실행합니다:  
 ```bash
 node app.js
 ```
 
-### 3. **Swagger UI 확인**
-서버 실행 후, 브라우저에서 Swagger UI에 접속하여 API를 테스트할 수 있습니다:
+---
 
-- **URL**: `http://localhost:3000/api-docs`
-- **포트 정보**: 포트는 사용 가능한 포트로 자동 설정됩니다 (예: `3000`, `3001`, `3002`)
+### 3. **Swagger UI 확인**
+서버 실행 후, 브라우저에서 Swagger UI에 접속하여 API를 테스트할 수 있습니다:  
+- **URL**: `http://localhost:3000/api-docs`  
+- **포트 정보**: 포트는 사용 가능한 포트로 자동 설정됩니다 (예: `3000`, `3001`, `3002`)  
 
 ---
 
