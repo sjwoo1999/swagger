@@ -60,6 +60,14 @@ app.post('/api/auth/validate-password', authController.validatePassword);
 app.post('/api/admin/login', adminController.loginAdmin);
 app.get('/api/admin/certified-users', adminController.getCertifiedUsers);
 app.delete('/api/admin/clear-verified-emails', adminController.clearVerifiedEmails);
+app.post('/api/admin/users', adminController.createAdmin);
+app.get('/api/admin/users', adminController.getAdmins);
+app.put('/api/admin/users/:id', adminController.updateAdmin);
+app.delete('/api/admin/users/:id', adminController.deleteAdmin);
+
+// users 라우트 추가
+app.put('/api/user/:id', userController.updateUser);
+app.delete('/api/user/:id', userController.deleteUser);
 
 // recruitment 라우트 추가
 app.get('/api/recruitment', recruitmentController.getRecruitments);
@@ -69,6 +77,7 @@ app.put('/api/recruitment/:recruitment_id', recruitmentController.updateRecruitm
 app.delete('/api/recruitment/:recruitment_id', recruitmentController.deleteRecruitment);
 
 // project 라우트 추가
+app.get('/api/projects', projectController.createProject);
 app.get('/api/projects', projectController.getProjects);
 app.get('/api/projects/:project_id', projectController.getProjectById);
 app.get('/api/projects/completed', projectController.getCompletedProjects);
@@ -87,6 +96,8 @@ app.get('/api/profiles/resume/:user_id', profileController.getResume);
 // comment 라우트 추가
 app.get('/api/recruitments/:recruitment_id/comment', commentController.getComments);
 app.post('/api/recruitment/:recruitment_id/comment', commentController.createComment);
+app.put('/api/recruitments/:recruitment_id/comment/:comment_id', commentController.updateComment);
+app.delete('/api/recruitments/:recruitment_id/comment/:comment_id', commentController.deleteComment);
 
 // scrap 라우트 추가
 app.get('/api/scraps/recruitments', scrapController.getScrapedRecruitments);

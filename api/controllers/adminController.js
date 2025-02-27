@@ -1,6 +1,49 @@
 // api/controllers/adminController.js
-const mockAdmins = [{ email: 'admin@example.com', role: 'ADMIN' }];
+const mockAdmins = [{ id: 1, email: 'admin@example.com', role: 'ADMIN' }];
 const mockVerifiedEmails = ['verified@example.com'];
+
+const createAdmin = (req, res) => {
+  const { email, role } = req.body;
+  if (!email || !role) {
+    return res.status(400).json({ error: '이메일과 역할은 필수입니다.' });
+  }
+
+  const newAdmin = { id: mockAdmins.length + 1, email, role };
+  mockAdmins.push(newAdmin);
+  res.status(201).json(newAdmin);
+};
+
+const getAdmins = (req, res) => {
+  res.status(200).json(mockAdmins);
+};
+
+const updateAdmin = (req, res) => {
+  const { id } = req.params;
+  const { email, role } = req.body;
+  if (!email || !role) {
+    return res.status(400).json({ error: '이메일과 역할은 필수입니다.' });
+  }
+
+  const admin = mockAdmins.find(a => a.id === parseInt(id));
+  if (!admin) {
+    return res.status(404).json({ message: '관리자를 찾을 수 없습니다.' });
+  }
+
+  admin.email = email;
+  admin.role = role;
+  res.status(200).json({ message: '관리자가 수정되었습니다.', admin });
+};
+
+const deleteAdmin = (req, res) => {
+  const { id } = req.params;
+  const index = mockAdmins.findIndex(a => a.id === parseInt(id));
+  if (index === -1) {
+    return res.status(404).json({ message: '관리자를 찾을 수 없습니다.' });
+  }
+
+  mockAdmins.splice(index, 1);
+  res.status(200).json({ message: '관리자가 삭제되었습니다.' });
+};
 
 const loginAdmin = (req, res) => {
   const { email, password } = req.body;
@@ -25,4 +68,4 @@ const clearVerifiedEmails = (req, res) => {
   res.status(200).json({ message: '✅ 모든 인증된 이메일이 삭제되었습니다.' });
 };
 
-module.exports = { loginAdmin, getCertifiedUsers, clearVerifiedEmails };
+module.exports = { createAdmin, getAdmins, updateAdmin, deleteAdmin, loginAdmin, getCertifiedUsers, clearVerifiedEmails };
