@@ -1,0 +1,23 @@
+openapi: 3.0.0
+info:
+  title: Teamitaka Swagger API
+  version: 1.0.0
+  description: Teamitaka 애플리케이션의 Swagger 기반 API 명세서
+servers:
+  - url: http://localhost:10010
+    description: 로컬 개발 서버
+paths:
+  /hello:
+    get:
+      summary: Hello World
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Hello, World!"
