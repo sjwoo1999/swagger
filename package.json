@@ -8,6 +8,8 @@
   "license": "",
   "main": "app.js",
   "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "express": "^4.12.3",
     "swagger-express-mw": "^0.1.0",
     "swagger-ui-express": "^5.0.1",
