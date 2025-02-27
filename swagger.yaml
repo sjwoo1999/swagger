@@ -1,42 +1,46 @@
 openapi: 3.0.0
 info:
-  title: Teamitaka Swagger API
+  title: Teamitaka Swagger Practice API
   version: 1.0.0
-  description: Teamitaka 애플리케이션의 Swagger 기반 API 명세서
+  description: Teamitaka 애플리케이션의 Swagger 연습을 위한 API 명세서
 servers:
   - url: http://localhost:{port}
     variables:
       port:
-        default: "10020"
+        default: "3000"
         description: "Server port (dynamic)"
     description: 로컬 개발 서버
 paths:
   /:
     get:
-      summary: Root Redirect
-      description: 루트 경로로 접근 시 /api-docs로 리디렉션합니다.
+      summary: Welcome Message
+      description: 기본 경로로 환영 메시지를 반환합니다.
       responses:
-        '302':
-          description: Found - 리디렉션됨
-          headers:
-            Location:
+        '200':
+          description: 성공
+          content:
+            application/json:
               schema:
-                type: string
-                example: "/api-docs"
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "Welcome to Teamitaka Swagger Practice API! Visit /api-docs for Swagger UI."
   /hello:
     get:
       summary: Hello World
-      description: Returns 'Hello' to the caller
+      description: 이름 쿼리 파라미터를 기반으로 인사말을 반환합니다.
       parameters:
         - name: name
           in: query
-          description: The name of the person to whom to say hello
+          description: 인사할 대상의 이름
           required: false
           schema:
             type: string
       responses:
         '200':
-          description: Success
+          description: 성공
           content:
             application/json:
               schema:
@@ -46,8 +50,29 @@ paths:
                     type: string
                 example:
                   message: "Hello, stranger!"
-        default:
-          description: Error
+  /api/register:
+    post:
+      summary: 사용자 등록
+      description: 새로운 사용자를 등록합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "johndoe"
+                email:
+                  type: string
+                  example: "johndoe@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        '201':
+          description: 사용자 생성 성공
           content:
             application/json:
               schema:
@@ -55,9 +80,40 @@ paths:
                 properties:
                   message:
                     type: string
-                example:
-                  message: "An error occurred"
+                    example: "✅ 회원가입 성공!"
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: 필수 필드 누락 또는 중복 이메일
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "❌ 이미 존재하는 이메일입니다."
 components:
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        uuid:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [MEMBER, ADMIN]
+        createdAt:
+          type: string
+          format: date-time
   securitySchemes:
     BearerAuth:
       type: http

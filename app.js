@@ -1,21 +1,35 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
-const helloWorldController = require('./api/controllers/hello_world'); // 컨트롤러 경로
+const helloWorldController = require('./api/controllers/hello_world');
 const app = express();
 
 // Swagger 문서 로드
 const swaggerDocument = YAML.load('./swagger.yaml');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// 기본 경로(/)에서 /api-docs로 리디렉션
+// 기본 경로(/)에 응답 추가
 app.get('/', (req, res) => {
-  res.redirect(302, '/api-docs'); // 302 Found로 리디렉션 (임시 리디렉션)
-  // 또는 301로 영구 리디렉션 사용 가능: res.redirect(301, '/api-docs');
+  res.json({ message: 'Welcome to Teamitaka Swagger Practice API! Visit /api-docs for Swagger UI.' });
 });
 
 // hello_world 컨트롤러 라우트 추가
 app.get('/hello', helloWorldController.hello);
+
+// 더미 /api/register 엔드포인트 추가 (실습용)
+app.post('/api/register', (req, res) => {
+  res.status(201).json({
+    message: '✅ 회원가입 성공!',
+    user: {
+      user_id: 1,
+      uuid: '123e4567-e89b-12d3-a456-426614174000',
+      username: req.body.username || 'johndoe',
+      email: req.body.email || 'johndoe@example.com',
+      role: 'MEMBER',
+      createdAt: new Date().toISOString()
+    }
+  });
+});
 
 // 동적 포트 설정
 const findAvailablePort = async (ports) => {
@@ -36,7 +50,7 @@ const findAvailablePort = async (ports) => {
   throw new Error('No available ports in the list');
 };
 
-const basePorts = [10020, 10030, 10040];
+const basePorts = [3000, 3001, 3002];
 findAvailablePort(basePorts)
   .then(port => {
     app.listen(port, () => {
