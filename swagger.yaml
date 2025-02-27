@@ -879,7 +879,7 @@ paths:
                       type: string
                     recruitment_id:
                       type: integer
-  /api/recruitment/{recruitment_id}/comment:
+  /api/recruitments/{recruitment_id}/comment:
     post:
       summary: 댓글 작성
       description: 특정 모집공고에 댓글을 작성합니다.
@@ -900,8 +900,8 @@ paths:
                   type: string
                   example: "좋은 모집공고네요!"
       responses:
-        '200':
-          description: 성공
+        '201':
+          description: 댓글 작성 성공
           content:
             application/json:
               schema:
@@ -914,7 +914,7 @@ paths:
                   recruitment_id:
                     type: integer
         '400':
-          description: 필수 필드 누락
+          description: 필수 필드 누락 또는 부적절한 언어
           content:
             application/json:
               schema:
@@ -923,6 +923,9 @@ paths:
                   message:
                     type: string
                     example: "댓글 내용을 입력해주세요."
+                  error:
+                    type: string
+                    example: "댓글에 부적절한 언어가 포함되었습니다."
   /api/scraps/recruitments:
     get:
       summary: 스크랩한 모집공고 목록 조회
