@@ -11,6 +11,18 @@ servers:
         description: "Server port (dynamic)"
     description: 로컬 개발 서버
 paths:
+  /:
+    get:
+      summary: Root Redirect
+      description: 루트 경로로 접근 시 /api-docs로 리디렉션합니다.
+      responses:
+        '302':
+          description: Found - 리디렉션됨
+          headers:
+            Location:
+              schema:
+                type: string
+                example: "/api-docs"
   /hello:
     get:
       summary: Hello World
