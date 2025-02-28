@@ -2,8 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
-const yaml = require('js-yaml'); // yamljs 대신 js-yaml 사용
-const helloWorldController = require('./api/controllers/hello_world');
+const yaml = require('js-yaml');
 const authController = require('./api/controllers/authController');
 const adminController = require('./api/controllers/adminController');
 const recruitmentController = require('./api/controllers/recruitmentController');
@@ -22,8 +21,8 @@ const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       `http://localhost:${process.env.PORT || 3000}`,
-      `http://localhost:3001`,
-      `http://localhost:3002`,
+      'http://localhost:3001',
+      'http://localhost:3002'
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -33,7 +32,7 @@ const corsOptions = {
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
-  optionsSuccessStatus: 204,
+  optionsSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
@@ -42,15 +41,19 @@ app.use(express.json());
 // Swagger 문서 로드 및 동적 포트 반영
 let swaggerDocument;
 try {
-  swaggerDocument = yaml.load(fs.readFileSync('./api/swagger/swagger.yaml', 'utf8')); // 경로 수정 및 js-yaml 사용
+  swaggerDocument = yaml.load(fs.readFileSync('./swagger.yaml', 'utf8'));
 } catch (error) {
-  console.error('Failed to load swagger.yaml:', error.message);
-  process.exit(1);
+  if (process.env.NODE_ENV !== 'test') {
+    console.error('Failed to load swagger.yaml:', error.message);
+    process.exit(1);
+  } else {
+    throw error; // 테스트 환경에서는 오류를 throw하여 테스트가 실패하도록 함
+  }
 }
 
 // servers 속성 확인 및 기본값 설정
 if (!swaggerDocument.servers) {
-  swaggerDocument.servers = [{ url: 'http://localhost:3000' }]; // 기본값 추가
+  swaggerDocument.servers = [{ url: 'http://localhost:3000' }];
 }
 
 const findPort = () => process.env.PORT || 3000;
@@ -61,9 +64,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to Swagger Practice API! Visit /api-docs for Swagger UI.' });
 });
-
-// hello_world 컨트롤러 라우트 추가
-app.get('/hello', helloWorldController.getHello);
 
 // auth 라우트 추가
 app.post('/api/auth/register', authController.register);
@@ -80,6 +80,7 @@ app.put('/api/admin/users/:id', adminController.updateAdmin);
 app.delete('/api/admin/users/:id', adminController.deleteAdmin);
 
 // users 라우트 추가
+app.get('/api/user', userController.getUsers);
 app.put('/api/user/:id', userController.updateUser);
 app.delete('/api/user/:id', userController.deleteUser);
 
@@ -143,16 +144,22 @@ const findAvailablePort = async (ports) => {
   throw new Error('No available ports in the list');
 };
 
-const basePorts = [3000, 3001, 3002];
-findAvailablePort(basePorts)
-  .then(port => {
-    process.env.PORT = port;
-    app.listen(port, () => {
-      console.log(`Server running on http://localhost:${port}/`);
-      console.log(`Swagger UI available at http://localhost:${port}/api-docs`);
+// 테스트 환경에서는 app.listen을 실행하지 않음
+if (process.env.NODE_ENV !== 'test') {
+  const basePorts = [3000, 3001, 3002];
+  findAvailablePort(basePorts)
+    .then(port => {
+      process.env.PORT = port;
+      app.listen(port, () => {
+        console.log(`Server running on http://localhost:${port}/`);
+        console.log(`Swagger UI available at http://localhost:${port}/api-docs`);
+      });
+    })
+    .catch(err => {
+      console.error('Failed to start server:', err.message);
+      process.exit(1);
     });
-  })
-  .catch(err => {
-    console.error('Failed to start server:', err.message);
-    process.exit(1);
-  });
+}
+
+// 테스트를 위해 app 객체 내보내기
+module.exports = app;
