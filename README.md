@@ -73,6 +73,62 @@
 
 ---
 
+- **2025-02-28** 📝  
+  린팅 오류 해결: `npm run lint` 실행 시 발생한 ESLint 오류 수정.  
+  - 들여쓰기 오류(indent), 후행 쉼표(comma-dangle), 따옴표 스타일(quotes), 콘솔 로그 사용(no-console) 문제를 해결.  
+  - `app.js`에서 `console.log`를 테스트 환경에서 출력되지 않도록 조건문으로 감싸 처리.  
+  - `--fix` 옵션으로 자동 수정 가능한 오류 처리 후 수동으로 나머지 수정.  
+  - 수정 후 `npm run lint` 재실행하여 모든 오류 해결 확인.  
+  `swagger.yaml` 작성 진행:  
+  - `/api/auth/*`, `/api/admin/*`, `/api/user/*`, `/api/recruitment/*`, `/api/projects/*`, `/api/profiles/*`, `/api/recruitments/*/comment/*`, `/api/scraps/recruitments`, `/api/recruitment/*/scrap`, `/api/search`, `/api/univcert/*`, `/health` 엔드포인트 정의 완료.  
+  - 페이지네이션, 인증, 에러 응답, 예시 등을 포함하여 상세히 작성.
+
+- **2025-02-28** 🛠️  
+  `swagger.yaml` 파싱 오류 해결:  
+  - YAML 들여쓰기 오류(bad indentation of a mapping entry) 수정: `/api/auth/validate-password`의 `description` 들여쓰기를 2칸 공백으로 통일하고, 문자열을 따옴표로 감쌈.  
+  - `app.js`에서 테스트 환경에서 `process.exit(1)` 호출 방지: 테스트 환경에서는 에러를 throw하도록 수정.  
+  - 전체 `swagger.yaml` 들여쓰기 점검 및 통일.  
+  `swagger.yaml` 작성 완료:  
+  - 모든 엔드포인트의 세부 사항 정의 완료.  
+  - `operationId`, `summary`, `description`, 응답 상태 코드(`200`, `400`, `401`, `403`, `404`, `429`, `500`, `503`) 포함.  
+  - `components.schemas`에 주요 데이터 모델(`User`, `Recruitment`, `Project`, `Comment`) 정의.
+
+- **2025-02-28** 🔍  
+  테스트 실패 해결: `User Service` 테스트에서 `getUsers()`가 2개 사용자를 반환해야 하지만 1개만 반환하는 문제 수정.  
+  - `userService.js`에 `resetMockUsers` 메서드 추가, 테스트 간 상태 공유 방지.  
+  - `user.test.js`에 `beforeEach`로 각 테스트 실행 전 `mockUsers` 초기화 구현.  
+  - 수정 후 테스트 재실행: 모든 테스트 통과 확인.  
+  `swagger.yaml` 작성 진행:  
+  - `/api/projects/{project_id}`의 `PUT` 메서드 응답 정의 완료.  
+  - `/api/projects/completed`, `/api/projects/{project_id}/members` (GET, POST), `/api/profiles/*` 엔드포인트 정의.
+
+- **2025-02-28** 🛠️  
+  `swagger.yaml` 중복 키 오류 해결:  
+  - `externalDocs`가 최상위 수준에서 중복 정의되어 발생한 `duplicated mapping key` 오류 수정. 파일 끝부분의 중복 `externalDocs` 제거.  
+  - 전체 `swagger.yaml` 점검하여 중복 키 문제 없도록 확인.  
+  `swagger.yaml` 작성 진행:  
+  - `/api/recruitments/*/comment/*`, `/api/scraps/recruitments`, `/api/recruitment/*/scrap`, `/api/search` 엔드포인트 정의 완료.
+
+- **2025-02-28** 🛡️  
+  테스트 실패 해결: `User Controller` 테스트에서 `updateUser`와 `deleteUser` 응답 형식이 기대와 다른 문제 수정.  
+  - `userController.js` 수정: `updateUser`에서 `name`, `email` 유효성 검사 추가, 응답 형식을 `{ message: "...", user: {...} }`로 포맷팅, 에러 메시지 한글화.  
+  - `deleteUser`에서 응답 형식을 `{ message: "..." }`로 포맷팅, 에러 메시지 한글화.  
+  - 수정 후 테스트 재실행: 모든 테스트 통과 확인.  
+  `swagger.yaml` 작성 진행:  
+  - `/api/user/{id}` (PUT, DELETE) 응답 형식 테스트 결과와 일치하도록 업데이트.  
+  - `/api/univcert/*`, `/health` 엔드포인트 정의 완료.  
+  - 전체 `swagger.yaml` 작성 완료, 모든 엔드포인트 상세 정의 완료.
+
+- **2025-02-28** 📘  
+  `swagger.yaml` 최종 완성:  
+  - `/api/recruitments/{recruitment_id}/comment` (POST 메서드) 정의 완료: `security`, `parameters`, `requestBody`, `responses` (201, 400, 401, 404, 500) 추가.  
+  - `/api/recruitments/{recruitment_id}/comment/{comment_id}` (PUT, DELETE 메서드), `/api/scraps/recruitments`, `/api/recruitment/*/scrap`, `/api/search`, `/api/univcert/*`, `/health` 엔드포인트 정의 모두 완료.  
+  - 페이지네이션, 인증, 에러 응답, 예시 등을 포함하여 모든 엔드포인트 상세히 작성.  
+  - 전체 파일 점검: 들여쓰기 2칸 공백으로 통일, 중복 키 문제 없음 확인.  
+  테스트 재실행: `npm test` 실행하여 모든 테스트 통과 확인.
+
+---
+
 ## 🛠️ 사용 방법
 
 ### 1. **의존성 설치**  
