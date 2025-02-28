@@ -3137,7 +3137,3 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: JWT 기반 인증 토큰 (Bearer 형식)
-
-externalDocs:
-  description: Teamitaka API 사용 가이드 및 추가 문서
-  url: https://docs.teamitaka.com
