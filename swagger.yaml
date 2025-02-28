@@ -637,7 +637,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components.schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
               example:
                 success: false
                 message: "관리자 권한이 필요합니다."
@@ -922,7 +922,7 @@ paths:
                     name: "홍길동"
                     email: "hong@example.com"
                     updated_at: "2025-02-27T11:00:00.000Z"
-                message: "사용자 정보 수정 완료"
+                message: "사용자가 수정되었습니다."
         '400':
           description: 필수 필드 누락
           content:
@@ -993,7 +993,7 @@ paths:
               example:
                 success: true
                 data: {}
-                message: "사용자 삭제 완료"
+                message: "사용자가 삭제되었습니다."
         '401':
           description: 인증되지 않은 요청
           content:
@@ -1305,7 +1305,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components.schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
               example:
                 success: false
                 message: "모집 공고 수정 권한이 없습니다."
@@ -2382,7 +2382,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components.schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
               example:
                 success: false
                 message: "서버 오류 발생"
@@ -2559,9 +2559,14 @@ paths:
                 success: false
                 message: "댓글을 찾을 수 없습니다."
         '500':
-          example:
-            success: false
-            message: "서버 오류 발생"
+          description: 서버 오류
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                message: "서버 오류 발생"
     delete:
       tags:
         - Comment
@@ -2626,7 +2631,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components.schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
               example:
                 success: false
                 message: "서버 오류 발생"
