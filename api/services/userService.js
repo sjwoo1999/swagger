@@ -1,36 +1,36 @@
-// api/services/userService.js
-const mockUsers = [
-  { id: 1, name: '홍길동', email: 'hong@example.com' },
-  { id: 2, name: '김영희', email: 'kim@example.com' }
-];
+let mockUsers = [
+    { id: 1, name: '홍길동', email: 'hong@example.com' },
+    { id: 2, name: '김영희', email: 'kim@example.com' },
+  ];
   
-const getUsers = () => {
-  return mockUsers;
-};
+  const getUsers = () => {
+    return mockUsers;
+  };
   
-const updateUser = (id, name, email) => {
-  if (!name || !email) {
-    throw new Error('이름과 이메일은 필수입니다.');
-  }
+  const updateUser = (id, { name, email }) => {
+    const userIndex = mockUsers.findIndex(user => user.id === parseInt(id));
+    if (userIndex === -1) {
+      throw new Error('User not found');
+    }
+    mockUsers[userIndex] = { ...mockUsers[userIndex], name, email };
+    return mockUsers[userIndex];
+  };
   
-  const user = mockUsers.find(u => u.id === parseInt(id));
-  if (!user) {
-    throw new Error('사용자를 찾을 수 없습니다.');
-  }
+  const deleteUser = id => {
+    const userIndex = mockUsers.findIndex(user => user.id === parseInt(id));
+    if (userIndex === -1) {
+      throw new Error('User not found');
+    }
+    const deletedUser = mockUsers.splice(userIndex, 1)[0];
+    return deletedUser;
+  };
   
-  user.name = name;
-  user.email = email;
-  return { message: '사용자가 수정되었습니다.', user };
-};
+  // 테스트를 위해 mockUsers를 초기화하는 메서드 추가
+  const resetMockUsers = () => {
+    mockUsers = [
+      { id: 1, name: '홍길동', email: 'hong@example.com' },
+      { id: 2, name: '김영희', email: 'kim@example.com' },
+    ];
+  };
   
-const deleteUser = (id) => {
-  const index = mockUsers.findIndex(u => u.id === parseInt(id));
-  if (index === -1) {
-    throw new Error('사용자를 찾을 수 없습니다.');
-  }
-  
-  mockUsers.splice(index, 1);
-  return { message: '사용자가 삭제되었습니다.' };
-};
-  
-module.exports = { getUsers, updateUser, deleteUser };
+  module.exports = { getUsers, updateUser, deleteUser, resetMockUsers };

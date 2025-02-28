@@ -3,6 +3,10 @@ const request = require('supertest');
 const app = require('../../app'); // app.js
 const userService = require('../services/userService');
 
+const resetMockUsers = () => {
+    userService.resetMockUsers();
+}
+
 describe('User Controller API', () => {
   describe('GET /api/user', () => {
     it('should return a list of users', async () => {
@@ -59,13 +63,17 @@ describe('User Controller API', () => {
 });
 
 describe('User Service', () => {
-  it('should return a list of users', () => {
-    const users = userService.getUsers();
-    expect(users).toBeInstanceOf(Array);
-    expect(users).toHaveLength(2);
-  });
-
-  it('should throw an error if user ID does not exist on delete', () => {
-    expect(() => userService.deleteUser(999)).toThrow('사용자를 찾을 수 없습니다.');
-  });
+    beforeEach(() => {
+      resetMockUsers(); // 각 테스트 실행 전에 mockUsers 초기화
+    });
+  
+    it('should return a list of users', () => {
+      const users = userService.getUsers();
+      expect(users).toBeInstanceOf(Array);
+      expect(users).toHaveLength(2);
+    });
+  
+    it('should throw an error if user ID does not exist on delete', () => {
+      expect(() => userService.deleteUser(999)).toThrow('User not found');
+    });
 });
