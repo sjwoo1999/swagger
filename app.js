@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs');
+const fs = require('fs');
+const yaml = require('js-yaml'); // yamljs 대신 js-yaml 사용
 const helloWorldController = require('./api/controllers/hello_world');
 const authController = require('./api/controllers/authController');
 const adminController = require('./api/controllers/adminController');
@@ -12,6 +13,7 @@ const commentController = require('./api/controllers/commentController');
 const scrapController = require('./api/controllers/scrapController');
 const searchController = require('./api/controllers/searchController');
 const univCertController = require('./api/controllers/univCertController');
+const userController = require('./api/controllers/userController');
 
 const app = express();
 
@@ -21,7 +23,7 @@ const corsOptions = {
     const allowedOrigins = [
       `http://localhost:${process.env.PORT || 3000}`,
       `http://localhost:3001`,
-      `http://localhost:3002`
+      `http://localhost:3002`,
     ];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -31,14 +33,26 @@ const corsOptions = {
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
 
 // Swagger 문서 로드 및 동적 포트 반영
-const swaggerDocument = YAML.load('./swagger.yaml');
+let swaggerDocument;
+try {
+  swaggerDocument = yaml.load(fs.readFileSync('./api/swagger/swagger.yaml', 'utf8')); // 경로 수정 및 js-yaml 사용
+} catch (error) {
+  console.error('Failed to load swagger.yaml:', error.message);
+  process.exit(1);
+}
+
+// servers 속성 확인 및 기본값 설정
+if (!swaggerDocument.servers) {
+  swaggerDocument.servers = [{ url: 'http://localhost:3000' }]; // 기본값 추가
+}
+
 const findPort = () => process.env.PORT || 3000;
 swaggerDocument.servers[0].url = `http://localhost:${findPort()}`;
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -49,7 +63,7 @@ app.get('/', (req, res) => {
 });
 
 // hello_world 컨트롤러 라우트 추가
-app.get('/hello', helloWorldController.hello);
+app.get('/hello', helloWorldController.getHello);
 
 // auth 라우트 추가
 app.post('/api/auth/register', authController.register);
@@ -77,10 +91,10 @@ app.put('/api/recruitment/:recruitment_id', recruitmentController.updateRecruitm
 app.delete('/api/recruitment/:recruitment_id', recruitmentController.deleteRecruitment);
 
 // project 라우트 추가
-app.get('/api/projects', projectController.createProject);
 app.get('/api/projects', projectController.getProjects);
 app.get('/api/projects/:project_id', projectController.getProjectById);
 app.get('/api/projects/completed', projectController.getCompletedProjects);
+app.post('/api/projects', projectController.createProject);
 app.put('/api/projects/:project_id', projectController.updateProject);
 app.delete('/api/projects/:project_id', projectController.deleteProject);
 app.get('/api/projects/:project_id/members', projectController.getProjectMembers);
